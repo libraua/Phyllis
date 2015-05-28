@@ -1,3 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Phyllis</string>
+    <string name="fieldUsername">Username</string>
+    <string name="fieldLogin">Login</string>
+    <string name="usernamehint">Username</string>
+    <string name="passwordfield">Password</string>
+    <string name="logout">Logout</string>
+    <string name="action_signin">Sign In</string>
+    <string name="login_error">Error trying to log in: </string>
+    <string name="server_url">Server URL</string>
+    <string name="default_server_url">http://phyl.es/</string>
+    <string name="Phyllis">PhyllisSettings</string>
+    <string name="CookieKey">CookieKey</string>
 </resources>
