@@ -12,4 +12,6 @@
     <string name="default_server_url">http://phyl.es/</string>
     <string name="Phyllis">PhyllisSettings</string>
     <string name="CookieKey">CookieKey</string>
+    <string name="title_item_list">Items</string>
+    <string name="title_item_detail">Item Detail</string>
 </resources>

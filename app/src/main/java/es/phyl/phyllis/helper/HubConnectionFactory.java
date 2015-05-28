@@ -122,9 +122,9 @@ public class HubConnectionFactory {
 			
 			@Override
 			public void log(String message, LogLevel level) {
-				if (level == LogLevel.Critical) {
+				//if (level == LogLevel.Critical) {
 					Log.d("Phyllis", level.toString() + ": " + message);
-				}
+				//}
 			}
 		});
 		
@@ -132,7 +132,7 @@ public class HubConnectionFactory {
 		
 
 		try {
-			mChat = mConnection.createHubProxy("requestServerTime");
+			mChat = mConnection.createHubProxy("mainhub");
 		} catch (InvalidStateException e) {
 			Log.d("Phyllis", "Error getting creating proxy: " + e.toString());
 			future.triggerError(e);

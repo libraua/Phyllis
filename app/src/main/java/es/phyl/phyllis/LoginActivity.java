@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import es.phyl.phyllis.R;
+import es.phyl.phyllis.helper.HubConnectionFactory;
 import microsoft.aspnet.signalr.client.Action;
 import microsoft.aspnet.signalr.client.ErrorCallback;
 import microsoft.aspnet.signalr.client.Platform;
@@ -208,7 +210,9 @@ public class LoginActivity extends Activity {
                             @Override
                             public void run() {
                                 TextView tvError = (TextView) la.findViewById(R.id.tvError);
-                                tvError.setText(getString(R.string.login_error) + error.getMessage());
+                                tvError.setText(getString(R.string.login_error) + error.toString());
+                                //error.printStackTrace();
+                                //Log.d("1111", );
                                 tvError.setVisibility(View.VISIBLE);
                             }
                         });
@@ -235,7 +239,7 @@ public class LoginActivity extends Activity {
 
                 final HubProxy chat = hcf.getChatHub();
 
-                chat.invoke("Join").done(new Action<Void>() {
+                chat.invoke("requestServerTime").done(new Action<Void>() {
 
                     @Override
                     public void run(Void obj) throws Exception {
@@ -243,15 +247,12 @@ public class LoginActivity extends Activity {
 
                             @SuppressLint("InlinedApi")
                             public void run() {
-                                //TODO Create LobbyActivity
-/*
-                                Intent i = new Intent(getApplicationContext(), RoomLobbyActivity.class);
+                                Intent i = new Intent(getApplicationContext(), ItemListActivity.class);
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 }
                                 startActivity(i);
-*/
                             }
                         });
 
