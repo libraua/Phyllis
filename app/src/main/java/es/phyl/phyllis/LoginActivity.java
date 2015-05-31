@@ -244,7 +244,7 @@ public class LoginActivity extends Activity {
 
                     @SuppressLint("InlinedApi")
                     public void run() {
-                        Intent i = new Intent(getApplicationContext(), ItemListActivity.class);
+                        Intent i = new Intent(getApplicationContext(), GroupsListMainActivity.class);
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

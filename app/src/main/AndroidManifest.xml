@@ -35,6 +35,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="es.phyl.phyllis.ItemListActivity" />
         </activity>
+        <activity
+            android:name=".GroupsListMainActivity"
+            android:label="@string/title_activity_groups_list_main"
+            android:parentActivityName=".LoginActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="es.phyl.phyllis.LoginActivity" />
+        </activity>
     </application>
 
 </manifest>

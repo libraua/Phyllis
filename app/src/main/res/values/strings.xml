@@ -14,4 +14,7 @@
     <string name="CookieKey">CookieKey</string>
     <string name="title_item_list">Items</string>
     <string name="title_item_detail">Item Detail</string>
+    <string name="title_activity_groups_list_main">Groups List</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>

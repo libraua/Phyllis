@@ -32,6 +32,7 @@ import microsoft.aspnet.signalr.client.transport.ClientTransport;
 import microsoft.aspnet.signalr.client.transport.ServerSentEventsTransport;
 
 public class HubConnectionFactory {
+	public static final String GET_GROUPS = "requestGroups";
 
 	private static HubConnectionFactory mInstance= null;
 	private HubConnection mConnection;
@@ -128,7 +129,7 @@ public class HubConnectionFactory {
 
 			@Override
 			public void log(String message, LogLevel level) {
-				Log.d("Phyllis", level.toString() + ": " + message);
+				//Log.d("Phyllis", level.toString() + ": " + message);
 			}
 		};
 		mConnection = new HubConnection(url, "", true, logger);
@@ -155,6 +156,8 @@ public class HubConnectionFactory {
 				Log.d("Phyllis", "mConnection.connected(new Runnable())" + json.toString());
 			}
 		});
+
+
 
 		mConnection.connected(new Runnable() {
 			@Override
