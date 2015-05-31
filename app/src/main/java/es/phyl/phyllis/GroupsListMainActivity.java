@@ -63,4 +63,5 @@ public class GroupsListMainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
