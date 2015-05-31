@@ -2,16 +2,20 @@ package es.phyl.phyllis.helper;
 
 import android.util.Log;
 
+import com.google.gson.JsonElement;
+
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
 
 import microsoft.aspnet.signalr.client.Action;
 import microsoft.aspnet.signalr.client.ErrorCallback;
 import microsoft.aspnet.signalr.client.InvalidStateException;
 import microsoft.aspnet.signalr.client.LogLevel;
 import microsoft.aspnet.signalr.client.Logger;
+import microsoft.aspnet.signalr.client.MessageReceivedHandler;
 import microsoft.aspnet.signalr.client.NullLogger;
 import microsoft.aspnet.signalr.client.Platform;
 import microsoft.aspnet.signalr.client.SignalRFuture;
@@ -24,6 +28,8 @@ import microsoft.aspnet.signalr.client.http.Request;
 import microsoft.aspnet.signalr.client.http.Response;
 import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
+import microsoft.aspnet.signalr.client.transport.ClientTransport;
+import microsoft.aspnet.signalr.client.transport.ServerSentEventsTransport;
 
 public class HubConnectionFactory {
 
@@ -117,59 +123,73 @@ public class HubConnectionFactory {
 	}
 
 	public void createObjects(String url, final SignalRFuture<Void> future, CookieCredentials cc){
-		
-		mConnection = new HubConnection(url, "version=1.0.0.0", true, new Logger() {
-			
+
+		final Logger logger = new Logger() {
+
 			@Override
 			public void log(String message, LogLevel level) {
-				//if (level == LogLevel.Critical) {
-					Log.d("Phyllis", level.toString() + ": " + message);
-				//}
+				Log.d("Phyllis", level.toString() + ": " + message);
 			}
-		});
-		
+		};
+		mConnection = new HubConnection(url, "", true, logger);
+
 		mConnection.setCredentials(cc);
-		
 
 		try {
-			mChat = mConnection.createHubProxy("mainhub");
+			mChat = mConnection.createHubProxy("MainHub");
+			mChat.subscribe(new Object() {
+				@SuppressWarnings("unused")
+				public void messageReceived(String name, String message) {
+					Log.d("Phyllis", "mConnection.connected(new Runnable())");
+				}
+			});
 		} catch (InvalidStateException e) {
 			Log.d("Phyllis", "Error getting creating proxy: " + e.toString());
 			future.triggerError(e);
 		}
-		
-		SignalRFuture<Void> connectionFuture = mConnection.start();
-		
+
+		mConnection.received(new MessageReceivedHandler() {
+
+			@Override
+			public void onMessageReceived(JsonElement json) {
+				Log.d("Phyllis", "mConnection.connected(new Runnable())" + json.toString());
+			}
+		});
+
 		mConnection.connected(new Runnable() {
-			
 			@Override
 			public void run() {
-
+				Log.d("Phyllis", "mConnection.connected(new Runnable())");
 				future.setResult(null);
 			}
 		});
+
+		SignalRFuture<Void> connectionFuture = mConnection.start(new ServerSentEventsTransport(logger));
+
 		connectionFuture.done(new Action<Void>() {
-			
+
 			@Override
 			public void run(Void obj) throws Exception {
-				future.setResult(null);
+				Log.d("Phyllis", "connectionFuture.done");
+				future.setResult(obj);
 			}
 		});
 		
 		connectionFuture.onError(new ErrorCallback() {
-			
+
 			@Override
 			public void onError(Throwable error) {
+				Log.d("Phyllis", "Connection error: " + error.toString());
 				future.triggerError(error);
 			}
 		});
 		
 		mConnection.error(new ErrorCallback() {
-			
+
 			@Override
 			public void onError(Throwable error) {
 				Log.d("Phyllis", "Connection error: " + error.toString());
-				
+
 				if (!future.isDone()) {
 					future.triggerError(error);
 				}

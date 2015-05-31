@@ -25,6 +25,7 @@ import es.phyl.phyllis.R;
 import es.phyl.phyllis.helper.HubConnectionFactory;
 import microsoft.aspnet.signalr.client.Action;
 import microsoft.aspnet.signalr.client.ErrorCallback;
+import microsoft.aspnet.signalr.client.MessageReceivedHandler;
 import microsoft.aspnet.signalr.client.Platform;
 import microsoft.aspnet.signalr.client.SignalRFuture;
 import microsoft.aspnet.signalr.client.http.CookieCredentials;
@@ -34,11 +35,16 @@ import microsoft.aspnet.signalr.client.hubs.HubProxy;
 
 import android.view.Menu;
 
+import com.google.gson.JsonElement;
+
+import java.util.concurrent.ExecutionException;
+
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
 public class LoginActivity extends Activity {
+    private static final boolean DBG = true;
 
     private static final String SERVER_URL_CONFIG_KEY = "server_url";
 
@@ -68,7 +74,6 @@ public class LoginActivity extends Activity {
 
         // Set up the login form.
         mUserView = (EditText) findViewById(R.id.evUser);
-        //mUserView.setText(mUser);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -211,8 +216,7 @@ public class LoginActivity extends Activity {
                             public void run() {
                                 TextView tvError = (TextView) la.findViewById(R.id.tvError);
                                 tvError.setText(getString(R.string.login_error) + error.toString());
-                                //error.printStackTrace();
-                                //Log.d("1111", );
+                                Log.d("Phyllis", error.toString());
                                 tvError.setVisibility(View.VISIBLE);
                             }
                         });
@@ -227,35 +231,25 @@ public class LoginActivity extends Activity {
         connect.done(new Action<Void>() {
             @Override
             public void run(Void obj) throws Exception {
-
+                Log.d("Phyllis", "connect.done(new Action<Void>() {");
                 HubConnection conn = hcf.getHubConnection();
                 CookieCredentials cookieCredentials = (CookieCredentials) conn.getCredentials();
-
 
                 SharedPreferences settings = la.getSharedPreferences(getResources().getText(R.string.Phyllis).toString(), MODE_PRIVATE);
                 Editor editor = settings.edit();
                 editor.putString(getResources().getText(R.string.CookieKey).toString(), cookieCredentials.toString());
                 editor.commit();
 
-                final HubProxy chat = hcf.getChatHub();
+                runOnUiThread(new Runnable() {
 
-                chat.invoke("requestServerTime").done(new Action<Void>() {
+                    @SuppressLint("InlinedApi")
+                    public void run() {
+                        Intent i = new Intent(getApplicationContext(), ItemListActivity.class);
 
-                    @Override
-                    public void run(Void obj) throws Exception {
-                        runOnUiThread(new Runnable() {
-
-                            @SuppressLint("InlinedApi")
-                            public void run() {
-                                Intent i = new Intent(getApplicationContext(), ItemListActivity.class);
-
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                }
-                                startActivity(i);
-                            }
-                        });
-
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        }
+                        startActivity(i);
                     }
                 });
             }
